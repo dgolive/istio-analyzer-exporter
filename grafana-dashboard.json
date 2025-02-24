@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "id": null,
+    "uid": "istio-logs",
+    "title": "Istio Logs Dashboard",
+    "tags": ["istio", "logs", "loki"],
+    "timezone": "browser",
+    "schemaVersion": 36,
+    "version": 0,
+    "refresh": "5s",
+    "panels": [
+      {
+        "type": "stat",
+        "title": "Error Logs Count",
+        "gridPos": { "x": 0, "y": 0, "w": 6, "h": 3 },
+        "datasource": "Loki",
+        "targets": [
+          {
+            "expr": "count_over_time({job=\"istioctl-analyze\"} |= \"ERROR\" [5m])",
+            "format": "time_series",
+            "instant": true
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["sum"]
+          },
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "textMode": "auto"
+        }
+      },
+      {
+        "type": "stat",
+        "title": "Warning Logs Count",
+        "gridPos": { "x": 6, "y": 0, "w": 6, "h": 3 },
+        "datasource": "Loki",
+        "targets": [
+          {
+            "expr": "count_over_time({job=\"istioctl-analyze\"} |= \"WARNING\" [5m])",
+            "format": "time_series",
+            "instant": true
+          }
+        ],
+        "options": {
+          "reduceOptions": {
+            "values": false,
+            "calcs": ["sum"]
+          },
+          "colorMode": "value",
+          "graphMode": "none",
+          "justifyMode": "auto",
+          "textMode": "auto"
+        }
+      },
+      {
+        "type": "logs",
+        "title": "Istio Logs",
+        "gridPos": { "x": 0, "y": 3, "w": 12, "h": 9 },
+        "datasource": "Loki",
+        "targets": [
+          {
+            "expr": "{job=\"istioctl-analyze\"}",
+            "format": "logs"
+          }
+        ],
+        "options": {
+          "showLabels": ["level"],
+          "wrapLogMessage": true,
+          "dedupStrategy": "none"
+        }
+      }
+    ]
+  },
+  "folderId": 0,
+  "overwrite": true
+}
