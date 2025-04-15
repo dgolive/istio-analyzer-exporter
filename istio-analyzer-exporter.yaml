@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: istio-loki-exporter
+  namespace: aks-istio-ingress
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: istio-loki-exporter
+  template:
+    metadata:
+      labels:
+        app: istio-loki-exporter
+    spec:
+      containers:
+      - name: istio-loki-exporter
+        image: <your-dockerhub-username>/istio-loki-exporter:latest
+        env:
+        - name: LOKI_URL
+          value: "http://loki.aks-loki-stack.svc.cluster.local:3100/loki/api/v1/push"
