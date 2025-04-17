@@ -2,9 +2,16 @@ import subprocess
 import time
 import requests
 import json
+import logging
+import sys
+
+# Logging
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger(__name__)
+logger.info("App starting...")
 
 # Loki endpoint (update with your Loki URL)
-LOKI_URL = "https://your-loki-url/loki/api/v1/push"
+LOKI_URL = "http://loki-nonprod.pvt-dnszone-nonprod01.partstown.com/loki/api/v1/push"
 
 def run_istioctl_analyze(namespace):
     """Run the `istioctl analyze` command and capture logs."""
@@ -17,7 +24,7 @@ def run_istioctl_analyze(namespace):
         )
         return result.stdout
     except Exception as e:
-        print(f"Error running istioctl analyze: {e}")
+        logger.error(f"Error running istioctl analyze: {e}")
         return ""
 
 def send_logs_to_loki(logs, namespace):
@@ -48,11 +55,11 @@ def send_logs_to_loki(logs, namespace):
             headers={"Content-Type": "application/json"},
         )
         if response.status_code != 204:
-            print(f"Failed to send logs to Loki: {response.status_code} {response.text}")
+            logger.error(f"Failed to send logs to Loki: {response.status_code} {response.text}")
         else:
-            print("Logs successfully sent to Loki.")
+            logger.info("Logs successfully sent to Loki.")
     except Exception as e:
-        print(f"Error sending logs to Loki: {e}")
+        logger.exception(f"Error sending logs to Loki: {e}")
 
 if __name__ == "__main__":
     namespace = "aks-istio-ingress"

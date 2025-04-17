@@ -1,21 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: istio-loki-exporter
+  name: istio-analyzer-exporter
   namespace: aks-istio-ingress
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: istio-loki-exporter
+      app: istio-analyzer-exporter
   template:
     metadata:
       labels:
-        app: istio-loki-exporter
+        app: istio-analyzer-exporter
     spec:
       containers:
-      - name: istio-loki-exporter
-        image: <your-dockerhub-username>/istio-loki-exporter:latest
+      - name: istio-analyzer-exporter
+        image: danilogo/istio-analyzer-exporter:v1.0.3
         env:
         - name: LOKI_URL
           value: "http://loki.aks-loki-stack.svc.cluster.local:3100/loki/api/v1/push"
+ 
