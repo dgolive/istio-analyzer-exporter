@@ -13,11 +13,11 @@ logger.info("App starting...")
 # Loki endpoint (update with your Loki URL)
 LOKI_URL = "http://loki-nonprod.pvt-dnszone-nonprod01.partstown.com/loki/api/v1/push"
 
-def run_istioctl_analyze(namespace):
-    """Run the `istioctl analyze` command and capture logs."""
+def run_istioctl_analyze():
+    """Run the `istioctl analyze --all-namespaces` command and capture logs."""
     try:
         result = subprocess.run(
-            ["istioctl", "analyze", "-n", namespace],
+            ["istioctl", "analyze", "--all-namespaces", ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -27,7 +27,7 @@ def run_istioctl_analyze(namespace):
         logger.error(f"Error running istioctl analyze: {e}")
         return ""
 
-def send_logs_to_loki(logs, namespace):
+def send_logs_to_loki(logs):
     """Send logs to Loki."""
     if not logs.strip():
         return
@@ -40,7 +40,7 @@ def send_logs_to_loki(logs, namespace):
             {
                 "stream": {
                     "job": "istioctl-analyze",
-                    "namespace": namespace,
+                    "namespace": "all",
                 },
                 "values": [[str(timestamp), line] for line in lines],
             }
@@ -62,10 +62,9 @@ def send_logs_to_loki(logs, namespace):
         logger.exception(f"Error sending logs to Loki: {e}")
 
 if __name__ == "__main__":
-    namespace = "aks-istio-ingress"
     interval = 60  # Run every 60 seconds
 
     while True:
-        logs = run_istioctl_analyze(namespace)
-        send_logs_to_loki(logs, namespace)
+        logs = run_istioctl_analyze()
+        send_logs_to_loki(logs)
         time.sleep(interval)
