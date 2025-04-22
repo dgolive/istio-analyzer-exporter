@@ -1,7 +1,7 @@
 FROM python:3.13-slim
 
 # Install istioctl
-ENV ISTIO_VERSION=1.25.2
+ENV ISTIO_VERSION=1.26.0-beta.0
 ENV ISTIOCTL_DIR=/usr/local/bin
 
 RUN apt-get update && apt-get install -y curl unzip ca-certificates && rm -rf /var/lib/apt/lists/*
