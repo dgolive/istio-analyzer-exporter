@@ -16,7 +16,7 @@ Istio-Analyzer-Exporter works with "istioctl" who is a configuration command lin
 
 ## How to deploy
 ````
-kubectl apply -f istio-analyzer-exporter.yaml
+kubectl apply -f istio-analyzer-exporter.yaml -n istio-system
 ```
 
 
