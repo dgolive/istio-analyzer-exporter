@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: istio-analyzer-exporter
-  namespace: aks-istio-ingress
 spec:
   replicas: 1
   selector:
@@ -15,8 +14,10 @@ spec:
     spec:
       containers:
       - name: istio-analyzer-exporter
-        image: danilogo/istio-analyzer-exporter:v1.0.4
+        image: danilogo/istio-analyzer-exporter:v1.0.6
         env:
-        - name: LOKI_URL
-          value: "http://loki.aks-loki-stack.svc.cluster.local:3100/loki/api/v1/push"
+        - name: CLUSTER_NAME
+          value: "dev01-nonprod"
+        - name: LOGGING_TOOL_URL
+          value: "http://loki-nonprod.pvt-dnszone-nonprod01.partstown.com/loki/api/v1/push"
  
