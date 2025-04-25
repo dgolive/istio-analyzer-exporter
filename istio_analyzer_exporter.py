@@ -4,6 +4,7 @@ import requests
 import json
 import logging
 import sys
+import os
 
 # Logging
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -11,7 +12,6 @@ logger = logging.getLogger(__name__)
 logger.info("App starting...")
 
 # Loki endpoint (update with your Loki URL)
-LOKI_URL = "http://loki-nonprod.pvt-dnszone-nonprod01.partstown.com/loki/api/v1/push"
 
 def run_istioctl_analyze():
     """Run the `istioctl analyze --all-namespaces` command and capture logs."""
@@ -28,7 +28,7 @@ def run_istioctl_analyze():
         return ""
 
 def send_logs_to_loki(logs):
-    """Send logs to Loki."""
+    """Send logs to your Logging Tool."""
     if not logs.strip():
         return
 
@@ -41,28 +41,32 @@ def send_logs_to_loki(logs):
                 "stream": {
                     "job": "istioctl-analyze",
                     "namespace": "all",
+                    "cluster": CLUSTER_NAME,
                 },
                 "values": [[str(timestamp), line] for line in lines],
             }
         ]
     }
 
-    # Send logs to Loki
+    # Send logs to your Logging Tool
     try:
         response = requests.post(
-            LOKI_URL,
+            LOGGING_TOOL_URL,
             data=json.dumps(loki_payload),
             headers={"Content-Type": "application/json"},
         )
         if response.status_code != 204:
             logger.error(f"Failed to send logs to Loki: {response.status_code} {response.text}")
         else:
-            logger.info("Logs successfully sent to Loki.")
+            logger.info("Logs successfully sent to your Logging Tool.")
     except Exception as e:
-        logger.exception(f"Error sending logs to Loki: {e}")
+        logger.exception(f"Error sending logs to your Logging Tool: {e}")
 
 if __name__ == "__main__":
     interval = 60  # Run every 60 seconds
+    CLUSTER_NAME = os.getenv("CLUSTER_NAME", "unknow-cluster") #default fallback
+    LOGGING_TOOL_URL = os.getenv("LOGGING_TOOL_URL", "unknow-cluster")
+
 
     while True:
         logs = run_istioctl_analyze()
