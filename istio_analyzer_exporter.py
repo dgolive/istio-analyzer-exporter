@@ -13,11 +13,16 @@ logger.info("App starting...")
 
 # Loki endpoint (update with your Loki URL)
 
+
 def run_istioctl_analyze():
-    """Run the `istioctl analyze --all-namespaces` command and capture logs."""
+    """Run the `istioctl analyze --all-namespaces` cmd and capture logs."""
     try:
         result = subprocess.run(
-            ["istioctl", "analyze", "--all-namespaces", ],
+            [
+                "istioctl",
+                "analyze",
+                "--all-namespaces",
+            ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
@@ -26,6 +31,7 @@ def run_istioctl_analyze():
     except Exception as e:
         logger.error(f"Error running istioctl analyze: {e}")
         return ""
+
 
 def send_logs_to_loki(logs):
     """Send logs to your Logging Tool."""
@@ -56,17 +62,19 @@ def send_logs_to_loki(logs):
             headers={"Content-Type": "application/json"},
         )
         if response.status_code != 204:
-            logger.error(f"Failed to send logs to Loki: {response.status_code} {response.text}")
+            logger.error(
+                f"Failed to send logs: {response.status_code} {response.text}"
+            )
         else:
             logger.info("Logs successfully sent to your Logging Tool.")
     except Exception as e:
         logger.exception(f"Error sending logs to your Logging Tool: {e}")
 
-if __name__ == "__main__":
-    interval = 60  # Run every 60 seconds
-    CLUSTER_NAME = os.getenv("CLUSTER_NAME", "unknow-cluster") #default fallback
-    LOGGING_TOOL_URL = os.getenv("LOGGING_TOOL_URL", "unknow-cluster")
 
+if __name__ == "__main__":
+    interval = 60
+    CLUSTER_NAME = os.getenv("CLUSTER_NAME", "unknow-cluster")
+    LOGGING_TOOL_URL = os.getenv("LOGGING_TOOL_URL", "unknow-cluster")
 
     while True:
         logs = run_istioctl_analyze()
