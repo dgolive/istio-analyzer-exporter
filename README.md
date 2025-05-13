@@ -1,42 +1,75 @@
 # Istio Analyzer Exporter
 
 ## About
-Istio-Analyzer-Exporter helps to ensure that the Istio Service Mesh is configured correctly by providing analytics collected to a logging management tool and then can be presented in a Grafana dashboard.
+Istio-Analyzer-Exporter helps to ensure that the Istio Service Mesh is configured correctly by providing analytics collected to a logging management tool, which can then be presented in a Grafana dashboard.
 
 ## How does it work?
-Istio-Analyzer-Exporter tool collects, processs and forward logs to a logging management tool. The version v1.0.0 uses Grafana Loki as logging management tool.
+The Istio-Analyzer-Exporter tool collects, processes, and forwards logs to a logging management tool. Version **v1* uses **Grafana Loki** as the logging management tool. 
 
-Istio-Analyzer-Exporter works with "istioctl" who is a configuration command line utility that allows service operators to debug and diagnose their Istio service mesh deployments.
+It works alongside **`istioctl`**, a configuration command-line utility that allows service operators to debug and diagnose their Istio service mesh deployments.
 
+---
 
 ### Istio Analyzer Dashboard  
 
-![alt text](image.png)
+![Istio Analyzer Dashboard](img/image.png)  
+*Example of the Grafana dashboard displaying Istio analytics.*
 
+---
 
-## How to deploy
-````
+## How to Deploy
+To deploy the Istio Analyzer Exporter, use the following command:
+
+```bash
 kubectl apply -f istio-analyzer-exporter.yaml -n istio-system
 ```
 
 
-### References:
-https://istio.io/latest/docs/reference/commands/istioctl/  
-https://istio.io/latest/docs/reference/commands/istioctl/#istioctl-analyze  
-https://istio.io/latest/docs/ops/diagnostic-tools/istioctl/  
+## Error and Warning Samples
+Below are examples of errors and warnings that Istio-Analyzer-Exporter can help identify and resolve:
 
+- **Error [IST0161]:**  
+  *(Gateway aks-istio-ingress/backstage-gw)*  
+  The credential referenced by the Gateway `backstage-gw` in namespace `aks-istio-ingress` is invalid, which can cause the traffic not to work as expected.
 
+- **Warning [IST0138]:**  
+  *(Gateway aks-istio-ingress/aks-sre-nonprod-gateway-mfe)*  
+  Duplicate certificate in multiple gateways (`aks-istio-ingress/aks-sre-nonprod-gateway-mfe` and `aks-istio-ingress/alloy-nonprod-gw`) may cause 404s if clients re-use HTTP2 connections.
 
-### CONTRIBUTORS
-```
- 2058  sudo docker build -t danilogo/istio-analyzer-exporter:v1.0.0 .
- 2063  sudo docker login -u danilogo
- 2064  sudo docker push danilogo/istio-analyzer-exporter:v1.0.0 
+---
 
-```
+## References
+For more information, refer to the official Istio documentation:
 
-#### ERROR/WARNING SAMPLES
-errors found it to fix
-Error [IST0161] (Gateway aks-istio-ingress/backstage-gw) The credential referenced by the Gateway backstage-gw in namespace aks-istio-ingress is invalid, which can cause the traffic not to work as expected.
+- [Istioctl Commands](https://istio.io/latest/docs/reference/commands/istioctl/)  
+- [Istioctl Analyze](https://istio.io/latest/docs/reference/commands/istioctl/#istioctl-analyze)  
+- [Istio Diagnostic Tools](https://istio.io/latest/docs/ops/diagnostic-tools/istioctl/)  
 
-Warning [IST0138] (Gateway aks-istio-ingress/aks-sre-nonprod-gateway-mfe) Duplicate certificate in multiple gateways [aks-istio-ingress/aks-sre-nonprod-gateway-mfe aks-istio-ingress/alloy-nonprod-gw] may cause 404s if clients re-use HTTP2 connections.
+---
+
+## Contributors
+If you'd like to contribute, please feel free to submit a pull request or open an issue or feel free to reach out if you have suggestions for improvement!
+
+---
+
+## License
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+
+---
+
+## Additional Resources
+- **Grafana Loki Documentation:** [https://grafana.com/docs/loki/latest/](https://grafana.com/docs/loki/latest/)  
+- **Istio Service Mesh Overview:** [https://istio.io/](https://istio.io/)  
+
+---
+
+## Screenshots
+Here are some additional screenshots of the tool in action:
+
+1. **Error Detection Example:**  
+   ![Error Detection](img/error-example.png)  
+
+2. **Warning Detection Example:**  
+   ![Warning Detection](img/warning-example.png)  
+
+---
