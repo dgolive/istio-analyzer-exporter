@@ -18,7 +18,17 @@ It works alongside **`istioctl`**, a configuration command-line utility that all
 ---
 
 ## How to Deploy
-To deploy the Istio Analyzer Exporter, use the following command:
+Set the CLUSTER_NAME and LOGGING_TOOL_URL environment variables in the istio-analyzer-exporter.yaml file.
+
+```yaml
+        env:
+        - name: CLUSTER_NAME
+          value: "k8s-dev01"
+        - name: LOGGING_TOOL_URL
+          value: "http://loki.example.com/loki/api/v1/push"
+```
+
+Then deploy it using the following command:
 
 ```bash
 kubectl apply -f istio-analyzer-exporter.yaml -n istio-system
@@ -63,13 +73,3 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ---
 
-## Screenshots
-Here are some additional screenshots of the tool in action:
-
-1. **Error Detection Example:**  
-   ![Error Detection](img/error-example.png)  
-
-2. **Warning Detection Example:**  
-   ![Warning Detection](img/warning-example.png)  
-
----
