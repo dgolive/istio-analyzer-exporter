@@ -11,9 +11,6 @@ logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger(__name__)
 logger.info("App starting...")
 
-# Loki endpoint (update with your Loki URL)
-
-
 def run_istioctl_analyze():
     """Run the `istioctl analyze --all-namespaces` cmd and capture logs."""
     try:
@@ -33,7 +30,7 @@ def run_istioctl_analyze():
         return ""
 
 
-def send_logs_to_loki(logs):
+def send_logs_to_logtool(logs):
     """Send logs to your Logging Tool."""
     if not logs.strip():
         return
@@ -54,7 +51,7 @@ def send_logs_to_loki(logs):
         ]
     }
 
-    # Send logs to your Logging Tool
+    # Send logs to Loki
     try:
         response = requests.post(
             LOGGING_TOOL_URL,
@@ -78,5 +75,5 @@ if __name__ == "__main__":
 
     while True:
         logs = run_istioctl_analyze()
-        send_logs_to_loki(logs)
+        send_logs_to_logtool(logs)
         time.sleep(interval)
