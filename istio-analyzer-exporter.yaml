@@ -17,7 +17,7 @@ spec:
         image: danilogo/istio-analyzer-exporter:v1.0.6
         env:
         - name: CLUSTER_NAME
-          value: "dev01-nonprod"
+          value: "k8s-dev01"
         - name: LOGGING_TOOL_URL
-          value: "http://loki-nonprod.pvt-dnszone-nonprod01.example.com/loki/api/v1/push"
+          value: "http://loki.example.com/loki/api/v1/push"
  
