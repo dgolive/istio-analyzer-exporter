@@ -1,14 +1,17 @@
-FROM python:3.13-slim
+FROM python:3.14.0rc1-slim-bullseye
 
 # Install istioctl
-ENV ISTIO_VERSION=1.26.0-beta.0
+ENV ISTIO_VERSION=1.26.3
 ENV ISTIOCTL_DIR=/usr/local/bin
 
 RUN apt-get update && apt-get install -y curl unzip ca-certificates && rm -rf /var/lib/apt/lists/*
 
-RUN curl -sL https://istio.io/downloadIstioctl | ISTIO_VERSION=$ISTIO_VERSION sh - \
-    && mv ~/.istioctl/bin/istioctl $ISTIOCTL_DIR \
-    && chmod +x $ISTIOCTL_DIR/istioctl
+RUN curl -L https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/istioctl-${ISTIO_VERSION}-linux-amd64.tar.gz \
+    -o istioctl.tar.gz \
+    && tar -xzf istioctl.tar.gz \
+    && mv istioctl ${ISTIOCTL_DIR}/istioctl \
+    && chmod +x ${ISTIOCTL_DIR}/istioctl \
+    && rm istioctl.tar.gz
 
 ENV PATH=$ISTIOCTL_DIR:$PATH
 
@@ -17,5 +20,7 @@ WORKDIR /app
 COPY istio_analyzer_exporter.py .
 
 RUN pip install requests
+
+USER nonroot
 
 CMD ["python3", "istio_analyzer_exporter.py"]

@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.9] - 2025-Jul-29
+### Added
+-
+### Changed
+- Updated Istioctl version
+  ref.: https://github.com/istio/istio/releases
+### Fixed
+-
+
+## [1.0.8] - 2025-Jul-29
+### Added
+-
+### Changed
+### Fixed
+- Security issues with USER
+  ref.: https://docs.docker.com/scout/policy/#default-non-root-user
+
+## [1.0.7] - 2025-Jul-29
+### Added
+
+### Changed
+- Update Python Image
+### Fixed
+- Security issues
+- Dockerfile to build
+
 ## [1.0.6] - 2025-Apr-22
 ### Added
 - cluster variable
