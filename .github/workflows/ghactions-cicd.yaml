@@ -32,7 +32,7 @@ jobs: # Define jobs to run
           context: . # Build context is the root of the repository
           file: ./Dockerfile # Dockerfile location
           push: true # Push the image after building
-          tags: danilogo/istio-analyzer-exporter:v1.0.11 # Tag for the Docker image
+          tags: epontech/istio-analyzer-exporter:v1.0.11 # Tag for the Docker image
 
 
   security-code-review:
@@ -50,6 +50,6 @@ jobs: # Define jobs to run
         uses: docker/scout-action@v1
         with:
           command: cves
-          image: danilogo/istio-analyzer-exporter:v1.0.11
+          image: epontech/istio-analyzer-exporter:v1.0.11
           dockerhub-user: ${{ secrets.DOCKERHUB_USERNAME }}
           dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
