@@ -1,13 +1,43 @@
-name: CI/CD Pipeline
+# This GitHub Actions workflow automates the process of building, testing, and deploying a project.
+# The workflow is triggered on push and pull request events to the main branch.
 
-on:
-  push:
-    branches:
-      - main
+name: CI/CD Pipeline # Name of the workflow
 
-jobs:
-  build-and-push:
+on: # Workflow trigger configuration
+  push: # Trigger on push events
+    branches: # Specify branches to trigger on
+      - main # Only trigger on pushes to the main branch
+
+jobs: # Define jobs to run
+  build-and-push: # Job name
+    runs-on: ubuntu-latest # Use the latest Ubuntu runner
+
+    steps: # List of steps in the job
+      
+      - name: Checkout code # Step to checkout repository code
+        uses: actions/checkout@v4 # Use the official checkout action
+
+      - name: Set up Docker Buildx # Step to set up Docker Buildx for advanced builds
+        uses: docker/setup-buildx-action@v3 # Use Docker Buildx setup action
+
+      - name: Log in to Docker Hub # Step to authenticate to Docker Hub
+        uses: docker/login-action@v3 # Use Docker login action
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }} # Docker Hub username from secrets
+          password: ${{ secrets.DOCKERHUB_TOKEN }} # Docker Hub token from secrets
+
+      - name: Build and push Docker image # Step to build and push Docker image
+        uses: docker/build-push-action@v5 # Use Docker build and push action
+        with:
+          context: . # Build context is the root of the repository
+          file: ./Dockerfile # Dockerfile location
+          push: true # Push the image after building
+          tags: danilogo/istio-analyzer-exporter:v1.0.11 # Tag for the Docker image
+
+
+  security-code-review:
     runs-on: ubuntu-latest
+    needs: build-and-push
 
     steps:
       - name: Checkout code
@@ -16,16 +46,10 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+      - name: Docker Scout Analyze
+        uses: docker/scout-action@v1
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          tags: danilogo/istio-analyzer-exporter:v1.0.11
+          command: cves
+          image: danilogo/istio-analyzer-exporter:v1.0.11
+          dockerhub-user: ${{ secrets.DOCKERHUB_USERNAME }}
+          dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
