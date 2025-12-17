@@ -15,6 +15,8 @@ RUN curl -L https://github.com/istio/istio/releases/download/${ISTIO_VERSION}/is
 
 ENV PATH=$ISTIOCTL_DIR:$PATH
 
+RUN useradd --create-home nonroot
+
 WORKDIR /app
 
 COPY istio_analyzer_exporter.py .
